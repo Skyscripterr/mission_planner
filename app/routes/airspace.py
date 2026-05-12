@@ -35,8 +35,7 @@ def create_restriction(restriction: AirspaceRestrictionCreate, db: Session = Dep
 @router.post("/check")
 def check_airspace(schedule: ScheduleMissionRequest, db: Session = Depends(get_db)):
     """
-    Check if a proposed mission time window conflicts with any airspace restrictions
-    using our blazing fast Interval Tree!
+    Check if a proposed mission time window conflicts with any airspace restrictions.
     """
     restrictions = db.query(AirspaceRestriction).all()
     
@@ -45,7 +44,7 @@ def check_airspace(schedule: ScheduleMissionRequest, db: Session = Depends(get_d
     for r in restrictions:
         tree.insert(r.start_time, r.end_time, r.id)
         
-    # 2. Query the tree to find overlaps in O(log N) time!
+    # Query the interval tree for overlaps in O(log N)
     conflict_id = tree.find_overlap(schedule.start_time, schedule.end_time)
     
     if conflict_id:

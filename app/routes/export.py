@@ -35,7 +35,7 @@ def export_mission_data(mission_id: int, db: Session = Depends(get_db)):
 def export_mission_waypoints(mission_id: int, db: Session = Depends(get_db)):
     """
     Exports the mission steps as a QGroundControl compatible .waypoints file.
-    The steps are ordered using Topological Sort!
+    Steps are ordered via topological sort to satisfy dependencies.
     """
     mission = db.query(Mission).filter(Mission.id == mission_id).first()
     if not mission:
@@ -55,7 +55,7 @@ def export_mission_waypoints(mission_id: int, db: Session = Depends(get_db)):
         for prereq in step.prerequisites:
             edges.append((prereq.id, step.id))
             
-    # 2. Sort the steps so they happen in the correct order!
+    # 2. Determine execution order via topological sort
     try:
         sorted_ids = topological_sort(vertices, edges)
     except CircularDependencyError as e:

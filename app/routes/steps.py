@@ -79,9 +79,8 @@ def validate_mission_steps(mission_id: int, db: Session = Depends(get_db)):
             edges.append((prereq.id, step.id))
             
     try:
-        # Run Kahn's Algorithm!
+        # Validate dependency graph for cycles and determine execution order
         sorted_order = topological_sort(vertices, edges)
         return sorted_order
     except CircularDependencyError as e:
-        # If the algorithm catches a cycle, we tell the user!
         raise HTTPException(status_code=400, detail=str(e))
