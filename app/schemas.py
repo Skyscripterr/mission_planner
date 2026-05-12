@@ -37,7 +37,6 @@ class FlightLogResponse(BaseModel):
         from_attributes = True
 
 
-# --- NEW SCHEMAS FOR DSA ---
 
 class MissionStepCreate(BaseModel):
     name: str
@@ -45,7 +44,7 @@ class MissionStepCreate(BaseModel):
     latitude: float = 0.0
     longitude: float = 0.0
     altitude: float = 0.0
-    prerequisite_ids: List[int] = [] # The IDs of steps that MUST happen before this one
+    prerequisite_ids: List[int] = [] 
 
 class MissionStepResponse(BaseModel):
     id: int
