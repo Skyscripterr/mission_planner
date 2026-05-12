@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from app.database import engine, Base
 from app.routes import missions, flight_logs, export, steps, airspace
 
-# Create the database tables automatically on startup
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -11,7 +10,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Include the API routers
+
 app.include_router(missions.router, tags=["Missions"])
 app.include_router(flight_logs.router, tags=["Flight Logs"])
 app.include_router(export.router, tags=["Export"])
