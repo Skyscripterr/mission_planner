@@ -18,7 +18,6 @@ def get_db():
 
 @router.post("/", response_model=AirspaceRestrictionResponse)
 def create_restriction(restriction: AirspaceRestrictionCreate, db: Session = Depends(get_db)):
-    """Create a new time window where drones are NOT allowed to fly."""
     if restriction.end_time <= restriction.start_time:
         raise HTTPException(status_code=400, detail="End time must be after start time")
         
@@ -34,9 +33,7 @@ def create_restriction(restriction: AirspaceRestrictionCreate, db: Session = Dep
 
 @router.post("/check")
 def check_airspace(schedule: ScheduleMissionRequest, db: Session = Depends(get_db)):
-    """
-    Check if a proposed mission time window conflicts with any airspace restrictions.
-    """
+   
     restrictions = db.query(AirspaceRestriction).all()
     
     # 1. Build the Interval Tree
