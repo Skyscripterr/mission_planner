@@ -3,8 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime 
 from .database import Base
 
-# Association table for the self-referential many-to-many relationship
-# This says: "dependent_id" requires "prerequisite_id" to be finished first.
+
 step_dependencies = Table(
     'step_dependencies', Base.metadata,
     Column('dependent_id', Integer, ForeignKey('mission_steps.id'), primary_key=True),
@@ -30,8 +29,8 @@ class FlightLog(Base):
     id = Column(Integer, primary_key=True, index=True)
     mission_id = Column(Integer, ForeignKey("missions.id"), nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
-    speed = Column(Float, nullable=False)           # e.g. meters per second
-    mode = Column(String, nullable=False)            # e.g. "manual", "auto", "hover"
+    speed = Column(Float, nullable=False)           
+    mode = Column(String, nullable=False)            
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
 
@@ -45,17 +44,16 @@ class MissionStep(Base):
     id = Column(Integer, primary_key=True, index=True)
     mission_id = Column(Integer, ForeignKey("missions.id"), nullable=False)
     name = Column(String, nullable=False)
-    command = Column(String, nullable=False) # e.g. "TAKEOFF", "WAYPOINT", "LAND"
+    command = Column(String, nullable=False) 
     
-    # Coordinates (using 0.0 if not needed for a specific command)
+    
     latitude = Column(Float, nullable=False, default=0.0)
     longitude = Column(Float, nullable=False, default=0.0)
     altitude = Column(Float, nullable=False, default=0.0)
 
     mission = relationship("Mission", back_populates="steps")
 
-    # The magic self-referential relationship for Topological Sort!
-    # "What steps must happen before this one?"
+  
     prerequisites = relationship(
         "MissionStep",
         secondary=step_dependencies,
@@ -71,6 +69,6 @@ class AirspaceRestriction(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    # Using integer Unix timestamps makes it easy for our Interval Tree
+
     start_time = Column(Integer, nullable=False) 
     end_time = Column(Integer, nullable=False)
